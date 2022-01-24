@@ -2,7 +2,7 @@ from multiprocessing import context
 from django.http import response
 from django.shortcuts import render
 
-# Rest framework resources.
+# Rest framework resources
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
