@@ -11,6 +11,11 @@ pip install markdown
 pip install django-filter
 ```
 
+## Instalación de python-dotenv, para el manejo de variales de entorno
+```bash
+pip install python-dotenv
+```
+
 ## Agregar la librería a INSTALED_APPS en settings
 ```bash
 'rest_framework',
