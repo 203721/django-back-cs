@@ -3,6 +3,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+#import json
+import json
+
 # imports of aggregate models
 from primerComponente.models import PrimerTabla
 
@@ -11,10 +14,22 @@ from primerComponente.serializers import PrimerTablaSerializer
 
 # Create your views here.
 class PrimerTablaList(APIView):
+
+    def response_custom(self, message, pay_load, status):
+        responseDictionary = {
+            'message': message,
+            'pay_load': pay_load,
+            'status': status
+        }
+        responseString = json.dumps(responseDictionary)
+        responseJson = json.loads(responseString)
+        return responseJson
+
     def get(self, request, format=None):
         queryset = PrimerTabla.objects.all()
         serializer = PrimerTablaSerializer(queryset, many=True, context={'request':request})
-        return Response(serializer.data)
+        successResponse = self.response_custom("Success", serializer.data, 200)
+        return Response(successResponse)
     
     def post(self, request, format=None):
         serializer = PrimerTablaSerializer(data = request.data)
