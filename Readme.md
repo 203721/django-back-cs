@@ -20,3 +20,11 @@ pip install python-dotenv
 ```bash
 'rest_framework',
 ```
+
+## Instalación de Pillow y psycopg2, el primero para manejo de formatos de archivo de imagen y el segundo como adaptador de bases de datos de PostgreSQL
+```bash
+pip install Pillow
+```
+```bash
+pip install psycopg2
+```
