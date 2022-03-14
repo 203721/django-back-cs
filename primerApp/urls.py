@@ -1,6 +1,7 @@
 from django.urls import path, include, re_path
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
+from django.views.static import serve
 
 # Imports for images
 from django.conf import settings
@@ -25,11 +26,11 @@ router.register(r'users', UserViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', include(router.urls)),
-    re_path(r'^api/v1/login', include('Login.urls')),
+    re_path(r'^api/', include('Login.urls')),
     re_path(r'^api/v1/registro/', include('Registro.urls')),
     re_path(r'^api/v1/primer_componente/', include('primerComponente.urls')),
     re_path(r'^api/v1/loadImage/', include('loadImage.urls')),
+    re_path(r'assets/(?P<path>.*)$',serve,{'document_root': settings.MEDIA_ROOT}),
+    re_path(r'^api/v1/profile/', include('Profile.urls')),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
-
-urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

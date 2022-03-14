@@ -3,15 +3,18 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import exceptions
-import os.path, json
+import os.path
+import json
 
 from loadImage.serializers import imageSerializer
 
 from loadImage.models import imageModel
 
 # Create your views here.
+
+
 class imageView(APIView):
-    
+
     def response_custom(self, message, pay_load, status):
         response_dictionary = {
             'message': message,
@@ -34,22 +37,26 @@ class imageView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            response = self.response_custom("Success",serializer.data, status=status.HTTP_201_CREATED)
+            response = self.response_custom(
+                "Success", serializer.data, status=status.HTTP_201_CREATED)
             return Response(response)
-        response = self.response_custom("Error",serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        response = self.response_custom(
+            "Error", serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(response)
-
 
     def get(self, request, format=None):
         queryset = imageModel.objects.all()
-        serializer = imageSerializer(queryset , many=True, context={'request':request})
-        response = self.response_custom("Success",serializer.data, status=status.HTTP_200_OK)
+        serializer = imageSerializer(
+            queryset, many=True, context={'request': request})
+        response = self.response_custom(
+            "Success", serializer.data, status=status.HTTP_200_OK)
         return Response(response)
+
 
 class imagenViewDetail(APIView):
 
     def response_custom(self, msg, response, status):
-        response_dictionary ={
+        response_dictionary = {
             "messages": msg,
             "pay_load": response,
             "status": status,
@@ -60,7 +67,7 @@ class imagenViewDetail(APIView):
 
     def get_object(self, pk):
         try:
-            return imageModel.objects.get(pk = pk)
+            return imageModel.objects.get(pk=pk)
         except imageModel.DoesNotExist:
             return 0
 
@@ -68,25 +75,29 @@ class imagenViewDetail(APIView):
         id_response = self.get_object(pk)
         if id_response != 0:
             id_response = imageSerializer(id_response)
-            response = self.response_custom("Success",id_response.data,status=status.HTTP_200_OK)
+            response = self.response_custom(
+                "Success", id_response.data, status=status.HTTP_200_OK)
             return Response(response)
-        response = self.response_custom("Error","No hay datos", status=status.HTTP_200_OK)
+        response = self.response_custom(
+            "Error", "No hay datos", status=status.HTTP_200_OK)
         return Response(response)
 
-    def put(self, request, pk, format = None):
+    def put(self, request, pk, format=None):
         id_response = self.get_object(pk)
         file = request.data['url_img']
         file_name, file_format = os.path.splitext(file.name)
         request.data['name_img'] = file_name
         request.data['format_img'] = file_format
-        serializer = imageSerializer(id_response, data = request.data)
+        serializer = imageSerializer(id_response, data=request.data)
         if serializer.is_valid():
             id_response.url_img.delete(save=True)
             serializer.save()
             datas = serializer.data
-            response = self.response_custom("Success",datas,status = status.HTTP_201_CREATED)
+            response = self.response_custom(
+                "Success", datas, status=status.HTTP_201_CREATED)
             return Response(response)
-        response = self.response_custom("Error",serializer.errors,status = status.HTTP_400_BAD_REQUEST)
+        response = self.response_custom(
+            "Error", serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(response)
 
     def delete(self, request, pk, format=None):
@@ -94,7 +105,9 @@ class imagenViewDetail(APIView):
         if id_response != 0:
             id_response.url_img.delete(save=True)
             id_response.delete()
-            response = self.response_custom("Success","Eliminado",status=status.HTTP_200_OK)
+            response = self.response_custom(
+                "Success", "Eliminado", status=status.HTTP_200_OK)
             return Response(response)
-        response = self.response_custom("Error","No se pudo eliminar",status=status.HTTP_400_BAD_REQUEST)
+        response = self.response_custom(
+            "Error", "No se pudo eliminar", status=status.HTTP_400_BAD_REQUEST)
         return Response(response)
