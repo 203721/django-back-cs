@@ -1,9 +1,9 @@
 from rest_framework import routers, serializers, viewsets
 
 # Imports
-from loadImage.models import imageModel
+from loadImage.models import ImageModel
 
-class imageSerializer(serializers.ModelSerializer):
+class ImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = imageModel
+        model = ImageModel
         fields = ('__all__')

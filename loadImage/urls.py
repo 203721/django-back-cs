@@ -2,10 +2,10 @@ from django.urls import path, re_path
 from django.conf.urls import include
 
 # Imports
-from loadImage.views import imageView
-from loadImage.views import imagenViewDetail
+from loadImage.views import ImageView
+from loadImage.views import ImagenViewDetail
 
 urlpatterns = [
-    re_path(r'^lista/$', imageView.as_view()),
-    re_path(r'^lista/(?P<pk>\d+)$', imagenViewDetail.as_view()),
+    re_path(r'^lista/$', ImageView.as_view()),
+    re_path(r'^lista/(?P<pk>\d+)$', ImagenViewDetail.as_view()),
 ]

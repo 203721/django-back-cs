@@ -25,7 +25,6 @@ class ProfileView(APIView):
     def post(self, request):
         if 'url_img' not in request.data:
             raise exceptions.ParseError("Selecciona el archivo a subir")
-        url_img = request.data['url_img']
         id_user = request.data['id_user']
         user = self.get_object(id_user)
         if user != 0:
@@ -37,9 +36,9 @@ class ProfileView(APIView):
                 serializers_response = ProfileSerializers(profile)
                 return Response(serializers_response.data, status=status.HTTP_201_CREATED)
             else:
-                return Response("Error", status=status.HTTP_400_BAD_REQUEST)
+                return Response("put_img")
         else:
-            return Response("No existe el usuario")
+            return Response("No existe el usuario", status=status.HTTP_404_NOT_FOUND)
 
 
 class ProfileViewDetail(APIView):
@@ -56,22 +55,21 @@ class ProfileViewDetail(APIView):
             id_response = ProfileSerializers(id_response)
             return Response(id_response.data, status=status.HTTP_200_OK)
         else:
-            return Response("Sin datos", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Usuario sin imagen subida")
 
     def put(self, request, pk, format=None):
         url_img = request.data['url_img']
         id_response = self.get_object(pk)
         if(id_response != 0):
-            serializers = ProfileSerializers(id_response)
             try:
                 os.remove('assets/'+str(id_response.url_img))
             except os.error:
                 print("No existe la imagen")
             id_response.url_img = url_img
             id_response.save()
-            return Response("Actualizado", status.HTTP_201_CREATED)
+            return Response("Actualizado", status=status.HTTP_201_CREATED)
         else:
-            return Response("No se pudo actualizar")
+            return Response("No se pudo actualizar", status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
         profile = self.get_object(pk)
@@ -101,7 +99,7 @@ class ProfileUser (APIView):
                 user.values(), status=status.HTTP_200_OK)
             return Response(response)
         else:
-            return Response("No existe el usuario", status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def put(self, request, pk, format=None):
         user = User.objects.filter(pk=pk)
@@ -114,4 +112,4 @@ class ProfileUser (APIView):
                 user.values(), status=status.HTTP_200_OK)
             return Response(response)
         else:
-            return Response("No existe el usuario", status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_400_BAD_REQUEST)

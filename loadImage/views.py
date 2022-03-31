@@ -6,14 +6,14 @@ from rest_framework import exceptions
 import os.path
 import json
 
-from loadImage.serializers import imageSerializer
+from loadImage.serializers import ImageSerializer
 
-from loadImage.models import imageModel
+from loadImage.models import ImageModel
 
 # Create your views here.
 
 
-class imageView(APIView):
+class ImageView(APIView):
 
     def response_custom(self, message, pay_load, status):
         response_dictionary = {
@@ -33,7 +33,7 @@ class imageView(APIView):
         file_name, file_format = os.path.splitext(file.name)
         request.data['name_img'] = file_name
         request.data['format_img'] = file_format
-        serializer = imageSerializer(data=request.data)
+        serializer = ImageSerializer(data=request.data)
 
         if serializer.is_valid():
             serializer.save()
@@ -45,15 +45,15 @@ class imageView(APIView):
         return Response(response)
 
     def get(self, request, format=None):
-        queryset = imageModel.objects.all()
-        serializer = imageSerializer(
+        queryset = ImageModel.objects.all()
+        serializer = ImageSerializer(
             queryset, many=True, context={'request': request})
         response = self.response_custom(
             "Success", serializer.data, status=status.HTTP_200_OK)
         return Response(response)
 
 
-class imagenViewDetail(APIView):
+class ImagenViewDetail(APIView):
 
     def response_custom(self, msg, response, status):
         response_dictionary = {
@@ -67,14 +67,14 @@ class imagenViewDetail(APIView):
 
     def get_object(self, pk):
         try:
-            return imageModel.objects.get(pk=pk)
-        except imageModel.DoesNotExist:
+            return ImageModel.objects.get(pk=pk)
+        except ImageModel.DoesNotExist:
             return 0
 
     def get(self, request, pk, format=None):
         id_response = self.get_object(pk)
         if id_response != 0:
-            id_response = imageSerializer(id_response)
+            id_response = ImageSerializer(id_response)
             response = self.response_custom(
                 "Success", id_response.data, status=status.HTTP_200_OK)
             return Response(response)
@@ -88,7 +88,7 @@ class imagenViewDetail(APIView):
         file_name, file_format = os.path.splitext(file.name)
         request.data['name_img'] = file_name
         request.data['format_img'] = file_format
-        serializer = imageSerializer(id_response, data=request.data)
+        serializer = ImageSerializer(id_response, data=request.data)
         if serializer.is_valid():
             id_response.url_img.delete(save=True)
             serializer.save()
